@@ -64,7 +64,7 @@ go run .
 `stdio` で起動するサーバーとして登録します。  
 `command` にはビルド済みバイナリの絶対パスを指定してください。
 
-例: `C:\path\to\writing-tools-mcp-windows-amd64.exe`
+例: `C:/path/to/writing-tools-mcp-windows-amd64.exe`
 
 ### Gemini CLI (`~/.gemini/settings.json`)
 
@@ -72,7 +72,7 @@ go run .
 {
   "mcpServers": {
     "writing-tools-mcp": {
-      "command": "C:\path\to\writing-tools-mcp-windows-amd64.exe",
+      "command": "C:/path/to/writing-tools-mcp-windows-amd64.exe",
       "args": []
     }
   }
@@ -87,7 +87,7 @@ go run .
 {
   "mcpServers": {
     "writing-tools-mcp": {
-      "command": "C:\path\to\writing-tools-mcp-windows-amd64.exe",
+      "command": "C:/path/to/writing-tools-mcp-windows-amd64.exe",
       "args": []
     }
   }
@@ -96,4 +96,4 @@ go run .
 
 Claude Desktop の設定ファイル例:
 - macOS: `~/Library/Application Support/Claude/claude_desktop_config.json`
-- Windows: `%APPDATA%\Claude\claude_desktop_config.json`
+- Windows: `%APPDATA%/Claude/claude_desktop_config.json`
