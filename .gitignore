@@ -1,0 +1,25 @@
+# Binaries
+writing-tools-mcp
+dist/
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+
+# Test binary and coverage
+*.test
+*.out
+coverage.out
+
+# Go workspace/local files
+go.work
+go.work.sum
+
+# Editor / OS
+.DS_Store
+.vscode/
+
+# Environment files
+.env
+.env.*
