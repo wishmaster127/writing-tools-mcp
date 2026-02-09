@@ -4,10 +4,27 @@ Goで実装したMCPサーバーです。`stdio` transportで動作します。
 
 ## 提供ツール
 
-- `wt_current_timestamp`  
-  現在時刻を `YYYYMMDDHHMM` 形式で返します。
-- `wt_count_file_characters`  
-  指定したファイルの文字数を返します。改行コード（`\n`, `\r`）はカウントしません。
+- `wt_timestamp`  
+  現在時刻を `YYYYMMDDHHMM` 形式で返します。  
+  出力: `{"timestamp": "202602091530"}`
+
+- `wt_count_chars`  
+  ファイル全体の UTF-8 文字数を返します（改行コード `\n`, `\r` は除外）。  
+  入力: `{"path": "path/to/file.txt"}`  
+  出力: `{"path": "path/to/file.txt", "character_count": 1234}`
+
+- `wt_count_chars_range`  
+  テキストファイルの `start_line` から `end_line` までの UTF-8 文字数を返します。  
+  行番号は 1 始まり・両端含むで、`end_line` が実ファイル行数を超える場合は存在する行までを対象にします。  
+  入力: `{"path": "path/to/file.txt", "start_line": 10, "end_line": 40}`  
+  出力: `{"characters": 842, "lines": 31}`
+
+### `wt_count_chars_range` の想定用途
+
+- 小説の特定シーンの文字数チェック
+- セクション単位の分量確認
+- テキストブロックの長さ測定
+- ドキュメントの一部分析
 
 ## 動作要件
 
