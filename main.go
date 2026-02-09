@@ -14,53 +14,57 @@ import (
 
 const toolPrefix = "wt_"
 
-type TimestampOutput struct {
-	Timestamp string `json:"timestamp" jsonschema:"current timestamp in YYYYMMDDHHMM format"`
+func getString(m map[string]any, key string) (string, error) {
+	v, ok := m[key]
+	if !ok {
+		return "", fmt.Errorf("%s is required", key)
+	}
+	s, ok := v.(string)
+	if !ok || strings.TrimSpace(s) == "" {
+		return "", fmt.Errorf("%s must be string", key)
+	}
+	return s, nil
 }
 
-type CountFileCharactersInput struct {
-	Path string `json:"path" jsonschema:"absolute or relative file path to count characters from"`
-}
-
-type CountFileCharactersOutput struct {
-	Path      string `json:"path" jsonschema:"file path that was counted"`
-	Character int    `json:"character_count" jsonschema:"character count excluding line break codes"`
-}
-
-func CurrentTimestampTool(ctx context.Context, req *mcp.CallToolRequest, _ struct{}) (*mcp.CallToolResult, TimestampOutput, error) {
+func CurrentTimestampTool(ctx context.Context, req *mcp.CallToolRequest, _ map[string]any) (*mcp.CallToolResult, map[string]any, error) {
 	ts := time.Now().Format("200601021504")
 
 	return &mcp.CallToolResult{
 			Content: []mcp.Content{
 				&mcp.TextContent{Text: ts},
 			},
-		}, TimestampOutput{
-			Timestamp: ts,
+		}, map[string]any{
+			"timestamp": ts,
 		}, nil
 }
 
-func CountFileCharactersTool(ctx context.Context, req *mcp.CallToolRequest, input CountFileCharactersInput) (*mcp.CallToolResult, CountFileCharactersOutput, error) {
-	if strings.TrimSpace(input.Path) == "" {
-		return nil, CountFileCharactersOutput{}, fmt.Errorf("path is required")
-	}
-
-	b, err := os.ReadFile(input.Path)
+func CountFileCharactersTool(ctx context.Context, req *mcp.CallToolRequest, input map[string]any) (*mcp.CallToolResult, map[string]any, error) {
+	path, err := getString(input, "path")
 	if err != nil {
-		return nil, CountFileCharactersOutput{}, fmt.Errorf("failed to read file: %w", err)
+		return nil, nil, err
 	}
 
-	withoutLF := strings.ReplaceAll(string(b), "\n", "")
-	withoutLineBreaks := strings.ReplaceAll(withoutLF, "\r", "")
-	count := utf8.RuneCountInString(withoutLineBreaks)
+	b, err := os.ReadFile(path)
+	if err != nil {
+		return nil, nil, fmt.Errorf("failed to read file: %w", err)
+	}
 
-	text := fmt.Sprintf("%s: %d", input.Path, count)
+	normalized := strings.Map(func(r rune) rune {
+		if r == '\n' || r == '\r' {
+			return -1
+		}
+		return r
+	}, string(b))
+	count := utf8.RuneCountInString(normalized)
+
+	text := fmt.Sprintf("%s: %d", path, count)
 	return &mcp.CallToolResult{
 			Content: []mcp.Content{
 				&mcp.TextContent{Text: text},
 			},
-		}, CountFileCharactersOutput{
-			Path:      input.Path,
-			Character: count,
+		}, map[string]any{
+			"path":            path,
+			"character_count": count,
 		}, nil
 }
 
