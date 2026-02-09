@@ -183,12 +183,12 @@ func main() {
 
 	mcp.AddTool(server, &mcp.Tool{
 		Name:        toolPrefix + "count_chars",
-		Description: "Count UTF-8 characters in an entire text file (excluding line breaks).\n\nGeneral-purpose tool for measuring total text length of a file.\n\nTypical uses:\n- Check total character count of a document\n- Verify full length of generated text\n- Measure size of a manuscript\n- Confirm overall file size in characters\n\nFor counting a specific section or scene, use wt_count_chars_range.",
+		Description: "Count UTF-8 characters in an entire text file (excluding line breaks).\n\nInput:\n- path: file path to a UTF-8 text file\n\nExample:\n{\n  \"path\": \"novel.txt\"\n}\n\nBoth absolute and relative paths are supported.\nRelative paths are resolved from the server process working directory.\n\nFor counting a specific section or scene, use wt_count_chars_range.",
 	}, CountFileCharactersTool)
 
 	mcp.AddTool(server, &mcp.Tool{
 		Name:        toolPrefix + "count_chars_range",
-		Description: "Count UTF-8 characters between start_line and end_line in a text file.\n\nThis is a general-purpose character counting tool for any text.\n\nLine numbers are 1-based and inclusive; if end_line exceeds file length, existing lines are counted.\n\nTypical uses:\n- Check character count of a scene in a novel\n- Measure length of a section\n- Verify size of a text block\n- Analyze part of a document",
+		Description: "Count UTF-8 characters between start_line and end_line in a text file.\n\nInput:\n- path: file path to a UTF-8 text file\n- start_line: starting line number (1-based)\n- end_line: ending line number (inclusive)\n\nExample:\n{\n  \"path\": \"novel.txt\",\n  \"start_line\": 120,\n  \"end_line\": 180\n}\n\nBoth absolute and relative paths are supported.\nRelative paths are resolved from the server process working directory.\nLine numbers are 1-based and inclusive; if end_line exceeds file length, existing lines are counted.",
 	}, CountFileCharactersRangeTool)
 
 	if err := server.Run(context.Background(), &mcp.StdioTransport{}); err != nil {

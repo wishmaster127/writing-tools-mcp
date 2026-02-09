@@ -10,13 +10,14 @@ Goで実装したMCPサーバーです。`stdio` transportで動作します。
 
 - `wt_count_chars`  
   ファイル全体の UTF-8 文字数を返します（改行コード `\n`, `\r` は除外）。  
-  入力: `{"path": "path/to/file.txt"}`  
-  出力: `{"path": "path/to/file.txt", "character_count": 1234}`
+  入力: `{"path": "/home/user/project/file.txt"}`  
+  出力: `{"path": "/home/user/project/file.txt", "character_count": 1234}`  
+  `path` は絶対パス・相対パスの両方に対応（相対パスはサーバー起動ディレクトリ基準）。
 
 - `wt_count_chars_range`  
   テキストファイルの `start_line` から `end_line` までの UTF-8 文字数を返します。  
   行番号は 1 始まり・両端含むで、`end_line` が実ファイル行数を超える場合は存在する行までを対象にします。  
-  入力: `{"path": "path/to/file.txt", "start_line": 10, "end_line": 40}`  
+  入力: `{"path": "./file.txt", "start_line": 10, "end_line": 40}`  
   出力: `{"characters": 842, "lines": 31}`
 
 ### `wt_count_chars_range` の想定用途
