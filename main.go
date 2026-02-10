@@ -179,16 +179,60 @@ func main() {
 	mcp.AddTool(server, &mcp.Tool{
 		Name:        toolPrefix + "timestamp",
 		Description: "Returns the current timestamp in YYYYMMDDHHMM format",
+		InputSchema: map[string]any{
+			"$schema": "https://json-schema.org/draft/2020-12/schema",
+			"type":    "object",
+			"properties": map[string]any{
+				// no arguments
+			},
+			"additionalProperties": false,
+		},
 	}, CurrentTimestampTool)
 
 	mcp.AddTool(server, &mcp.Tool{
 		Name:        toolPrefix + "count_chars",
-		Description: "Count UTF-8 characters in an entire text file (excluding line breaks).\n\nInput:\n- path: file path to a UTF-8 text file\n\nExample:\n{\n  \"path\": \"novel.txt\"\n}\n\nBoth absolute and relative paths are supported.\nRelative paths are resolved from the server process working directory.\n\nFor counting a specific section or scene, use wt_count_chars_range.",
+		Description: "Count UTF-8 characters in an entire text file (excluding line breaks).\nUse this tool when you need the total character count of a file.\n\nInput:\n- path: file path to a UTF-8 text file (most common text files)\n\nArguments must be provided as JSON object like the example below.\nExample:\n{\n  \"path\": \"novel.txt\"\n}\n\nThe file must exist and be readable by the server process.\nBoth absolute and relative paths are supported.\nRelative paths are resolved from the server process working directory.\n\nFor counting a specific section or scene, use wt_count_chars_range.",
+		InputSchema: map[string]any{
+			"$schema": "https://json-schema.org/draft/2020-12/schema",
+			"type":    "object",
+			"properties": map[string]any{
+				"path": map[string]any{
+					"type":        "string",
+					"description": "File path to a text file. The file must exist and be readable by the server process.",
+					"minLength":   1,
+				},
+			},
+			"required":             []string{"path"},
+			"additionalProperties": false,
+		},
 	}, CountFileCharactersTool)
 
 	mcp.AddTool(server, &mcp.Tool{
 		Name:        toolPrefix + "count_chars_range",
-		Description: "Count UTF-8 characters between start_line and end_line in a text file.\n\nInput:\n- path: file path to a UTF-8 text file\n- start_line: starting line number (1-based)\n- end_line: ending line number (inclusive)\n\nExample:\n{\n  \"path\": \"novel.txt\",\n  \"start_line\": 120,\n  \"end_line\": 180\n}\n\nBoth absolute and relative paths are supported.\nRelative paths are resolved from the server process working directory.\nLine numbers are 1-based and inclusive; if end_line exceeds file length, existing lines are counted.",
+		Description: "Count UTF-8 characters between start_line and end_line in a text file.\nUse this tool when you need character count of a specific section or scene.\n\nInput:\n- path: file path to a UTF-8 text file (most common text files)\n- start_line: starting line number (1-based)\n- end_line: ending line number (inclusive)\n\nArguments must be provided as JSON object like the example below.\nExample:\n{\n  \"path\": \"novel.txt\",\n  \"start_line\": 120,\n  \"end_line\": 180\n}\n\nThe file must exist and be readable by the server process.\nBoth absolute and relative paths are supported.\nRelative paths are resolved from the server process working directory.\nLine numbers are 1-based and inclusive; if end_line exceeds file length, existing lines are counted.",
+		InputSchema: map[string]any{
+			"$schema": "https://json-schema.org/draft/2020-12/schema",
+			"type":    "object",
+			"properties": map[string]any{
+				"path": map[string]any{
+					"type":        "string",
+					"description": "File path to a text file. The file must exist and be readable by the server process.",
+					"minLength":   1,
+				},
+				"start_line": map[string]any{
+					"type":        "integer",
+					"description": "Starting line number (1-based).",
+					"minimum":     1,
+				},
+				"end_line": map[string]any{
+					"type":        "integer",
+					"description": "Ending line number (inclusive).",
+					"minimum":     1,
+				},
+			},
+			"required":             []string{"path", "start_line", "end_line"},
+			"additionalProperties": false,
+		},
 	}, CountFileCharactersRangeTool)
 
 	if err := server.Run(context.Background(), &mcp.StdioTransport{}); err != nil {
