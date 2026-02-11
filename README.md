@@ -20,6 +20,18 @@ Goで実装したMCPサーバーです。`stdio` transportで動作します。
   入力: `{"path": "./file.txt", "start_line": 10, "end_line": 40}`  
   出力: `{"characters": 842, "lines": 31}`
 
+- `wt_dialogue_ratio`  
+  ファイル全体を対象に、セリフ文字数・地の文文字数・比率を返します。  
+  セリフは `「...」` / `『...』` で囲まれた文字として判定します。改行と引用符自体は文字数に含めません。  
+  入力: `{"path": "./novel.txt"}`  
+  出力: `{"path":"./novel.txt","dialogue_chars":1200,"narration_chars":1800,"total_chars":3000,"dialogue_ratio":0.4,"narration_ratio":0.6}`
+
+- `wt_dialogue_ratio_range`  
+  指定行範囲を対象に、セリフ文字数・地の文文字数・比率を返します。  
+  行番号は 1 始まり・両端含むです。  
+  入力: `{"path":"./novel.txt","start_line":120,"end_line":180}`  
+  出力: `{"path":"./novel.txt:120-180","dialogue_chars":420,"narration_chars":580,"total_chars":1000,"dialogue_ratio":0.42,"narration_ratio":0.58,"lines":61}`
+
 ### `wt_count_chars_range` の想定用途
 
 - 小説の特定シーンの文字数チェック
